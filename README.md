@@ -4,7 +4,7 @@ Welcome to the **Applicant Tracking System (ATS)** project! This intelligent sys
 
 ## Preview
 
-![Applicant Tracking System (ATS)](ATS GIF.gif)
+![Applicant Tracking System (ATS)](ATS-GIF.gif)
 
 
 ## 🚀 Introduction & Objective
