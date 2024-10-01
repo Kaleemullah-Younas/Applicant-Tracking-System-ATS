@@ -3,6 +3,7 @@
 Welcome to the **Applicant Tracking System (ATS)** project! This intelligent system evaluates resumes against job descriptions using cutting-edge AI models. By integrating ATS functionality, this application provides users with a detailed analysis of their resume, identifying keyword matches, missing skills, and suggestions to enhance their profiles.
 
 ## Preview
+
 ![Applicant Tracking System (ATS)](ATS GIF.gif)
 
 
