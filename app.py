@@ -4,15 +4,28 @@ import os
 import PyPDF2 as pdf
 from dotenv import load_dotenv
 import json
+import re
 
 load_dotenv()
 
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 def get_gemini_response(input):
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-1.5-flash-8b-001')
     response = model.generate_content(input)
     return response.text
+
+def clean_json_response(response):
+    """Clean the response to extract valid JSON"""
+    # Remove markdown code blocks if present
+    response = re.sub(r'```json\s*', '', response)
+    response = re.sub(r'```\s*$', '', response)
+    
+    # Find JSON object in the response
+    json_match = re.search(r'\{.*\}', response, re.DOTALL)
+    if json_match:
+        return json_match.group(0)
+    return response
 
 def input_pdf_text(uploaded_file):
     reader = pdf.PdfReader(uploaded_file)
@@ -52,7 +65,16 @@ if submit:
         formatted_input_prompt = input_prompt.format(text=text, jd=jd)
         response = get_gemini_response(formatted_input_prompt)
 
-        response_data = json.loads(response)
+        # Clean the response and try to parse JSON
+        cleaned_response = clean_json_response(response)
+        
+        try:
+            response_data = json.loads(cleaned_response)
+        except json.JSONDecodeError as e:
+            st.error(f"JSON parsing failed: {str(e)}")
+            st.error("Cleaned response:")
+            st.code(cleaned_response)
+            st.stop()
 
         st.markdown("### Evaluation Results")
         st.markdown(f"**💼 Job Description Match:** {response_data['Job Description Match']}")
